@@ -2,12 +2,6 @@ from django.contrib import admin
 from .models import *
 
 
-@admin.register(Staff)
-class StaffAdmin(admin.ModelAdmin):
-    list_display = ['full_name']
-    search_fields = ['full_name']
-
-
 @admin.register(Service)
 class MainServiceAdmin(admin.ModelAdmin):
     list_display = ['service_name', 'service_price']

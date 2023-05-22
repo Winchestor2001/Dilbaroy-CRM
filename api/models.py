@@ -2,18 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class Staff(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Аккаунт")
-    full_name = models.CharField(max_length=200, verbose_name="Ф.И.О")
-
-    def __str__(self) -> str:
-        return f"{self.full_name}"
-
-    class Meta:
-        verbose_name = "Ходим"
-        verbose_name_plural = "Ходимлар"
-
-
 class Doctor(models.Model):
     full_name = models.CharField(max_length=200, verbose_name="Ф.И.О")
 
