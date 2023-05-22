@@ -70,8 +70,7 @@ class Room(models.Model):
 
 class Patient(models.Model):
     slug_name = models.CharField(max_length=200, null=True, blank=True)
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='doctor', null=True, blank=True,
-                               verbose_name="Доктор")
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='doctor', verbose_name="Доктор")
     full_name = models.CharField(max_length=200, verbose_name="Ф.И.О")
     pass_data = models.CharField(max_length=50, null=True, blank=True, verbose_name="Паспорт сериа")
     phone_number = models.CharField(max_length=50, verbose_name="Тел. ракам")
@@ -83,7 +82,8 @@ class Patient(models.Model):
     duration = models.IntegerField(blank=True, null=True, verbose_name="Муддати")
     service = models.ManyToManyField(Service, null=True, blank=True, verbose_name="Хизмат турлари")
     food = models.BooleanField(default=True, verbose_name="Таом")
-    register_date = models.DateTimeField(blank=True, null=True, verbose_name="Хона бант килинган сана")
+    food_duration = models.IntegerField(blank=True, null=True, verbose_name="Таом Муддати")
+    from_date = models.DateTimeField(blank=True, null=True, verbose_name="Хона бант килинган сана")
     refund = models.FloatField(default=0, verbose_name="Кайтарилган сумма")
     total_amount = models.FloatField(default=0, verbose_name="Жами сумма")
     room_status = models.BooleanField(default=False, verbose_name="Хона")

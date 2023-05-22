@@ -20,7 +20,7 @@ class MainServiceAdmin(admin.ModelAdmin):
 
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ['id', 'full_name', 'pass_data', 'doctor', 'room', 'register_date']
+    list_display = ['id', 'full_name', 'pass_data', 'doctor', 'room', 'from_date']
     search_fields = ['full_name', 'pass_data', 'doctor', 'room']
 
 
