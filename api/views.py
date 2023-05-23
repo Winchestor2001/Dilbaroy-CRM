@@ -1,5 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
+from django.db.models import Sum
+from django.utils import timezone
 from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
@@ -95,3 +97,27 @@ class PatientAPI(APIView):
         serializer = PatientSerializer(data=patient, many=True)
         serializer.is_valid()
         return Response(serializer.data, status=200)
+
+    def put(self, request, pk):
+        patient = Patient.objects.get(pk=pk)
+        return Response({}, status=200)
+
+
+class StatisticsAPI(APIView):
+    def get(self, request):
+        from_date = timezone.make_aware(datetime.strptime(request.GET.get('from_date'), '%Y-%m-%dT%H:%M'))
+        to_date = timezone.make_aware(datetime.strptime(request.GET.get('to_date'), '%Y-%m-%dT%H:%M') + timedelta(days=1))
+        patients = Patient.objects.all()
+        total_amount = patients.aggregate(total_amount=Sum('total_amount'))['total_amount']
+        refund = patients.aggregate(refund=Sum('refund'))['refund']
+        if from_date and to_date:
+            if from_date == to_date:
+                patients = Patient.objects.filter(from_date=from_date).order_by('-created_date')
+            else:
+                patients = Patient.objects.filter(from_date__range=[from_date, to_date]).order_by('-created_date')
+
+        serializer = PatientSerializer(data=patients, many=True)
+        serializer.is_valid()
+        data = serializer.data
+        data.insert(0, {'total_amount': total_amount, 'total_refund': refund})
+        return Response(data, status=200)

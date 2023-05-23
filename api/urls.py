@@ -8,6 +8,7 @@ urlpatterns = [
     path('xizmatlar/', views.ServiceAPI.as_view()),
     path('xonalar/', views.RoomAPI.as_view()),
     path('bemor/<int:pk>/', views.PatientAPI.as_view()),
+    path('statistics/', views.StatisticsAPI.as_view()),
 
     path('auth/', include("djoser.urls")),
     re_path(r'^auth/', include("djoser.urls.authtoken")),
