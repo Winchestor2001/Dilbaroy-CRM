@@ -24,6 +24,8 @@ class HomeAPI(APIView):
 
 
 class RegisterPatientAPI(APIView):
+    authentication_classes = [TokenAuthentication]
+
     def get(self, request):
         patients = Patient.objects.all()
         serializer = PatientSerializer(data=patients, many=True)
@@ -41,7 +43,8 @@ class RegisterPatientAPI(APIView):
         birthday = datetime.strptime(request.data['birthday'], '%Y-%m-%d')
         room_number = request.data['room_number']
         duration = request.data['duration']
-        food = request.data['food']
+        food = Food.objects.get(id=request.data['food'])
+        food_amount = request.data['food_amount']
         food_duration = request.data['food_duration']
         from_date = request.data['from_date']
         total_amount = request.data['total_amount']
@@ -50,13 +53,14 @@ class RegisterPatientAPI(APIView):
             slug_name=text_to_slug(full_name),
             doctor=doctor, full_name=full_name, pass_data=pass_data,
             phone_number=phone_number, address=address, workplace=workplace, birthday=birthday,
-            food=food, food_duration=food_duration, from_date=from_date, total_amount=total_amount
+            food=food, food_duration=food_duration, from_date=from_date, total_amount=total_amount,
+            food_amount=food_amount
         )
 
         room = Room.objects.get(pk=room_number)
         patient.room = room
         patient.duration = duration
-        room.room_personal -= 1
+        room.room_patients -= 1
         room.save()
 
         if len(services) > 0:
@@ -68,6 +72,8 @@ class RegisterPatientAPI(APIView):
 
 
 class DoctorAPI(APIView):
+    authentication_classes = [TokenAuthentication]
+
     def get(self, request):
         doctors = Doctor.objects.all()
         serializer = DoctorsSerializer(data=doctors, many=True)
@@ -76,6 +82,8 @@ class DoctorAPI(APIView):
 
 
 class ServiceAPI(APIView):
+    authentication_classes = [TokenAuthentication]
+
     def get(self, request):
         services = Service.objects.all()
         serializer = ServiceSerializer(data=services, many=True)
@@ -84,6 +92,8 @@ class ServiceAPI(APIView):
 
 
 class RoomAPI(APIView):
+    authentication_classes = [TokenAuthentication]
+
     def get(self, request):
         room_types = RoomType.objects.all()
         serializer = RoomTypeSerializer(data=room_types, many=True)
@@ -92,6 +102,8 @@ class RoomAPI(APIView):
 
 
 class PatientAPI(APIView):
+    authentication_classes = [TokenAuthentication]
+
     def get(self, request, pk):
         patient = Patient.objects.filter(pk=pk)
         serializer = PatientSerializer(data=patient, many=True)
@@ -103,21 +115,13 @@ class PatientAPI(APIView):
         return Response({}, status=200)
 
 
-class StatisticsAPI(APIView):
+class DoctorStatisticsAPI(APIView):
+    authentication_classes = [TokenAuthentication]
+
     def get(self, request):
         from_date = timezone.make_aware(datetime.strptime(request.GET.get('from_date'), '%Y-%m-%dT%H:%M'))
         to_date = timezone.make_aware(datetime.strptime(request.GET.get('to_date'), '%Y-%m-%dT%H:%M') + timedelta(days=1))
-        patients = Patient.objects.all()
-        total_amount = patients.aggregate(total_amount=Sum('total_amount'))['total_amount']
-        refund = patients.aggregate(refund=Sum('refund'))['refund']
-        if from_date and to_date:
-            if from_date == to_date:
-                patients = Patient.objects.filter(from_date=from_date).order_by('-created_date')
-            else:
-                patients = Patient.objects.filter(from_date__range=[from_date, to_date]).order_by('-created_date')
-
-        serializer = PatientSerializer(data=patients, many=True)
+        doctors = Doctor.objects.all()
+        serializer = DoctorsStatisticsSerializer(data=doctors, many=True, from_date=from_date, to_date=to_date)
         serializer.is_valid()
-        data = serializer.data
-        data.insert(0, {'total_amount': total_amount, 'total_refund': refund})
-        return Response(data, status=200)
+        return Response(serializer.data, status=200)

@@ -3,12 +3,12 @@ from .models import *
 
 
 @admin.register(Service)
-class MainServiceAdmin(admin.ModelAdmin):
+class ServiceAdmin(admin.ModelAdmin):
     list_display = ['service_name', 'service_price']
 
 
 @admin.register(Doctor)
-class MainServiceAdmin(admin.ModelAdmin):
+class DoctorAdmin(admin.ModelAdmin):
     list_display = ['full_name']
 
 
@@ -16,14 +16,20 @@ class MainServiceAdmin(admin.ModelAdmin):
 class PatientAdmin(admin.ModelAdmin):
     list_display = ['id', 'full_name', 'pass_data', 'doctor', 'room', 'from_date']
     search_fields = ['full_name', 'pass_data', 'doctor', 'room']
+    list_display_links = ['id', 'full_name']
 
 
 @admin.register(RoomType)
-class AnalysisAdmin(admin.ModelAdmin):
+class RoomTypeAdmin(admin.ModelAdmin):
     list_display = ['room_type']
+
+
+@admin.register(Food)
+class FoodTypeAdmin(admin.ModelAdmin):
+    list_display = ['food', 'food_price']
 
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
-    list_display = ['room_type', 'room_number', 'room_personal', 'room_price', 'room_comfortable']
+    list_display = ['room_type', 'room_number', 'room_personal', 'room_patients', 'room_price', 'room_comfortable']
 
