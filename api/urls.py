@@ -9,6 +9,7 @@ urlpatterns = [
     path('xonalar/', views.RoomAPI.as_view()),
     path('bemor/<int:pk>/', views.PatientAPI.as_view()),
     path('doctor_statistics/', views.DoctorStatisticsAPI.as_view()),
+    path('food/', views.FoodAPI.as_view()),
 
     path('auth/', include("djoser.urls")),
     re_path(r'^auth/', include("djoser.urls.authtoken")),

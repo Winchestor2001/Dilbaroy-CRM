@@ -125,3 +125,12 @@ class DoctorStatisticsAPI(APIView):
         serializer = DoctorsStatisticsSerializer(data=doctors, many=True, from_date=from_date, to_date=to_date)
         serializer.is_valid()
         return Response(serializer.data, status=200)
+
+
+class FoodAPI(APIView):
+    def get(self, request):
+        food = Food.objects.all()
+        serializer = FoodSerializer(data=food, many=True)
+        serializer.is_valid()
+        return Response(serializer.data, status=200)
+
