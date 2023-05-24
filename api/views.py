@@ -39,11 +39,10 @@ class RegisterPatientAPI(APIView):
         pass_data = request.data['pass_data']
         phone_number = request.data['phone_number']
         address = request.data['address']
-        workplace = request.data['workplace']
         birthday = datetime.strptime(request.data['birthday'], '%Y-%m-%d')
         room_number = request.data['room_number']
         duration = request.data['duration']
-        food = Food.objects.get(id=request.data['food'])
+        food = request.data['food']
         food_amount = request.data['food_amount']
         food_duration = request.data['food_duration']
         from_date = request.data['from_date']
@@ -52,7 +51,7 @@ class RegisterPatientAPI(APIView):
         patient = Patient.objects.create(
             slug_name=text_to_slug(full_name),
             doctor=doctor, full_name=full_name, pass_data=pass_data,
-            phone_number=phone_number, address=address, workplace=workplace, birthday=birthday,
+            phone_number=phone_number, address=address, birthday=birthday,
             food=food, food_duration=food_duration, from_date=from_date, total_amount=total_amount,
             food_amount=food_amount
         )
@@ -123,6 +122,23 @@ class DoctorStatisticsAPI(APIView):
         to_date = timezone.make_aware(datetime.strptime(request.GET.get('to_date'), '%Y-%m-%dT%H:%M') + timedelta(days=1))
         doctors = Doctor.objects.all()
         serializer = DoctorsStatisticsSerializer(data=doctors, many=True, from_date=from_date, to_date=to_date)
+        serializer.is_valid()
+        return Response(serializer.data, status=200)
+
+
+class PatientStatisticsAPI(APIView):
+    authentication_classes = [TokenAuthentication]
+
+    def get(self, request):
+        from_date = timezone.make_aware(datetime.strptime(request.GET.get('from_date'), '%Y-%m-%dT%H:%M'))
+        to_date = timezone.make_aware(datetime.strptime(request.GET.get('to_date'), '%Y-%m-%dT%H:%M') + timedelta(days=1))
+        patients = Patient.objects.all()
+        if from_date and to_date:
+            if from_date == to_date:
+                patients = Patient.objects.filter(from_date=from_date).order_by('-created_date')
+            else:
+                patients = Patient.objects.filter(from_date__range=[from_date, to_date]).order_by('-created_date')
+        serializer = PatientSerializer(data=patients, many=True)
         serializer.is_valid()
         return Response(serializer.data, status=200)
 
