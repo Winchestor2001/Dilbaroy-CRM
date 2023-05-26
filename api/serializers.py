@@ -81,6 +81,32 @@ class PatientSerializer(serializers.ModelSerializer):
         model = Patient
         fields = '__all__'
 
+    # def update(self, instance, validated_data):
+    #     print(instance)
+    #     if 'duration' in validated_data:
+    #         instance.duration = validated_data['duration']
+    #     if 'food_amount' in validated_data:
+    #         instance.food_amount = validated_data['food_amount']
+    #     if 'food_duration' in validated_data:
+    #         instance.food_duration = validated_data['food_duration']
+    #     if 'food_refund' in validated_data:
+    #         instance.food_refund = validated_data['food_refund']
+    #     if 'room_refund' in validated_data:
+    #         instance.room_refund = validated_data['room_refund']
+    #     if 'total_refund' in validated_data:
+    #         instance.total_refund = validated_data['total_refund']
+    #     if 'total_amount' in validated_data:
+    #         instance.total_amount = validated_data['total_amount']
+    #     instance.room = instance.room
+    #     instance.service = instance.service
+    #     instance.doctor = instance.doctor
+    #     instance.full_name = instance.full_name
+    #     instance.phone_number = instance.phone_number
+    #     instance.address = instance.address
+    #
+    #     instance.save()
+    #     return instance
+
 
 class FoodSerializer(serializers.ModelSerializer):
 

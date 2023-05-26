@@ -64,11 +64,11 @@ class Room(models.Model):
 
 class Patient(models.Model):
     slug_name = models.CharField(max_length=200, null=True, blank=True)
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, verbose_name="Доктор")
-    full_name = models.CharField(max_length=200, verbose_name="Ф.И.О")
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, verbose_name="Доктор", blank=True)
+    full_name = models.CharField(max_length=200, verbose_name="Ф.И.О", blank=True)
     pass_data = models.CharField(max_length=50, null=True, blank=True, verbose_name="Паспорт сериа")
-    phone_number = models.CharField(max_length=50, verbose_name="Тел. ракам")
-    address = models.CharField(max_length=255, verbose_name="Манзил")
+    phone_number = models.CharField(max_length=50, verbose_name="Тел. ракам", blank=True)
+    address = models.CharField(max_length=255, verbose_name="Манзил", blank=True)
     birthday = models.DateField(null=True, verbose_name="Тугилган сана")
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Руйхатдан утган сана")
     room = models.ForeignKey(Room, on_delete=models.CASCADE, blank=True, null=True, verbose_name="Хона раками")
@@ -78,9 +78,10 @@ class Patient(models.Model):
     food_amount = models.FloatField(default=0, verbose_name="Таом нархи")
     food_duration = models.IntegerField(blank=True, null=True, verbose_name="Таом Муддати")
     from_date = models.DateTimeField(blank=True, null=True, verbose_name="Хона бант килинган сана")
-    food_refund = models.FloatField(default=0, verbose_name="Кайтарилган сумма")
-    room_refund = models.FloatField(default=0, verbose_name="Кайтарилган сумма")
+    food_refund = models.FloatField(default=0, verbose_name="Таомдан кайтарилган сумма")
+    room_refund = models.FloatField(default=0, verbose_name="Хонадан кайтарилган сумма")
     total_refund = models.FloatField(default=0, verbose_name="Кайтарилган сумма")
+    room_amount = models.FloatField(default=0, verbose_name="Хона жами сумма")
     total_amount = models.FloatField(default=0, verbose_name="Жами сумма")
     room_status = models.BooleanField(default=False, verbose_name="Хона")
 

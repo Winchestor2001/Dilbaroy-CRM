@@ -47,13 +47,14 @@ class RegisterPatientAPI(APIView):
         food_duration = request.data['food_duration']
         from_date = request.data['from_date']
         total_amount = request.data['total_amount']
+        room_amount = request.data['room_amount']
         doctor = Doctor.objects.get(pk=doctor)
         patient = Patient.objects.create(
             slug_name=text_to_slug(full_name),
             doctor=doctor, full_name=full_name, pass_data=pass_data,
             phone_number=phone_number, address=address, birthday=birthday,
             food=food, food_duration=food_duration, from_date=from_date, total_amount=total_amount,
-            food_amount=food_amount
+            food_amount=food_amount, room_amount=room_amount
         )
 
         room = Room.objects.get(pk=room_number)
@@ -111,15 +112,14 @@ class PatientAPI(APIView):
         serializer.is_valid()
         return Response(serializer.data, status=200)
 
-    def put(self, request):
-        patient_id = request.data.get('id')
+    def put(self, request, pk):
         room_duration = request.data.get('room_duration')
         food_duration = request.data.get('food_duration')
         room_refund = request.data.get('room_refund')
         food_refund = request.data.get('food_refund')
         total_amount = request.data.get('total_amount')
         food_amount = request.data.get('food_amount')
-        patient = Patient.objects.get(pk=patient_id)
+        patient = Patient.objects.get(pk=pk)
         patient.duration = room_duration
         patient.food_duration = food_duration
         patient.room_refund = room_refund
@@ -128,11 +128,14 @@ class PatientAPI(APIView):
         patient.food_amount = food_amount
         patient.save()
 
-        ser_patient = Patient.objects.filter(pk=patient_id)
+        ser_patient = Patient.objects.filter(pk=pk)
 
         serializer = PatientSerializer(data=ser_patient, many=True)
         serializer.is_valid()
-
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     return Response(serializer.data, status=200)
+        # return Response(serializer.errors, status=400)
         return Response(serializer.data, status=200)
 
 
