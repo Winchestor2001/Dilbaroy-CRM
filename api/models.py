@@ -56,8 +56,9 @@ class Room(models.Model):
         verbose_name = "Хона"
         verbose_name_plural = "Хоналар"
 
-    def save(self, *args, **kwargs):
-        self.room_patients = self.room_personal
+    def save(self, *args, status=False, **kwargs):
+        if not status:
+            self.room_patients = self.room_personal
         super().save(*args, **kwargs)
 
 

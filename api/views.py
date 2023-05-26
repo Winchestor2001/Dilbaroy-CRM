@@ -57,16 +57,18 @@ class RegisterPatientAPI(APIView):
         )
 
         room = Room.objects.get(pk=room_number)
+        room.room_patients -= 1
+        room.save(status=True)
+
         patient.room = room
         patient.duration = duration
-        room.room_patients -= 1
-        room.save()
 
         if len(services) > 0:
             for t in services:
                 patient.service.add(t)
 
         patient.save()
+
         return Response({'status': 'OK'})
 
 
@@ -109,9 +111,29 @@ class PatientAPI(APIView):
         serializer.is_valid()
         return Response(serializer.data, status=200)
 
-    def put(self, request, pk):
-        patient = Patient.objects.get(pk=pk)
-        return Response({}, status=200)
+    def put(self, request):
+        patient_id = request.data.get('id')
+        room_duration = request.data.get('room_duration')
+        food_duration = request.data.get('food_duration')
+        room_refund = request.data.get('room_refund')
+        food_refund = request.data.get('food_refund')
+        total_amount = request.data.get('total_amount')
+        food_amount = request.data.get('food_amount')
+        patient = Patient.objects.get(pk=patient_id)
+        patient.duration = room_duration
+        patient.food_duration = food_duration
+        patient.room_refund = room_refund
+        patient.food_refund = food_refund
+        patient.total_amount = total_amount
+        patient.food_amount = food_amount
+        patient.save()
+
+        ser_patient = Patient.objects.filter(pk=patient_id)
+
+        serializer = PatientSerializer(data=ser_patient, many=True)
+        serializer.is_valid()
+
+        return Response(serializer.data, status=200)
 
 
 class DoctorStatisticsAPI(APIView):
