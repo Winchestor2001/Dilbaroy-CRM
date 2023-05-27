@@ -119,6 +119,8 @@ class PatientAPI(APIView):
         food_refund = request.data.get('food_refund')
         total_amount = request.data.get('total_amount')
         food_amount = request.data.get('food_amount')
+        room_amount = request.data.get('room_amount')
+        total_refund = request.data.get('total_refund')
         patient = Patient.objects.get(pk=pk)
         patient.duration = room_duration
         patient.food_duration = food_duration
@@ -126,6 +128,8 @@ class PatientAPI(APIView):
         patient.food_refund = food_refund
         patient.total_amount = total_amount
         patient.food_amount = food_amount
+        patient.room_amount = room_amount
+        patient.total_refund = total_refund
         patient.save()
 
         ser_patient = Patient.objects.filter(pk=pk)
@@ -173,5 +177,15 @@ class FoodAPI(APIView):
         food = Food.objects.all()
         serializer = FoodSerializer(data=food, many=True)
         serializer.is_valid()
+        return Response(serializer.data, status=200)
+
+
+class PatientRoomEndAPI(APIView):
+    def post(self, request):
+        patient_id = request.data.get('patient_id')
+        patient = Patient.objects.filter(pk=patient_id)
+        patient[0].room_status = True
+        patient.save()
+        serializer = PatientSerializer(data=patient, many=True)
         return Response(serializer.data, status=200)
 
