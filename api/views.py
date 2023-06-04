@@ -42,9 +42,19 @@ class RegisterPatientAPI(APIView):
         birthday = datetime.strptime(request.data['birthday'], '%Y-%m-%d')
         room_number = request.data['room_number']
         duration = request.data['duration']
+
         food = request.data['food']
         food_amount = request.data['food_amount']
         food_duration = request.data['food_duration']
+
+        massaj1 = request.data['massaj1']
+        massaj1_amount = request.data['massaj1_amount']
+        massaj1_duration = request.data['massaj1_duration']
+
+        massaj2 = request.data['massaj2']
+        massaj2_amount = request.data['massaj2_amount']
+        massaj2_duration = request.data['massaj2_duration']
+
         from_date = request.data['from_date']
         total_amount = request.data['total_amount']
         room_amount = request.data['room_amount']
@@ -54,7 +64,9 @@ class RegisterPatientAPI(APIView):
             doctor=doctor, full_name=full_name, pass_data=pass_data,
             phone_number=phone_number, address=address, birthday=birthday,
             food=food, food_duration=food_duration, from_date=from_date, total_amount=total_amount,
-            food_amount=food_amount, room_amount=room_amount
+            food_amount=food_amount, room_amount=room_amount,
+            massaj1=massaj1, massaj1_amount=massaj1_amount, massaj1_duration=massaj1_duration,
+            massaj2=massaj2, massaj2_amount=massaj2_amount, massaj2_duration=massaj2_duration,
         )
 
         room = Room.objects.get(pk=room_number)
@@ -70,7 +82,10 @@ class RegisterPatientAPI(APIView):
 
         patient.save()
 
-        return Response({'status': 'OK'})
+        patient = Patient.objects.get(id=patient.id)
+        serializer = PatientSerializer(instance=patient)
+
+        return Response(serializer.data, status=201)
 
 
 class DoctorAPI(APIView):
@@ -114,21 +129,41 @@ class PatientAPI(APIView):
 
     def put(self, request, pk):
         room_duration = request.data.get('room_duration')
-        food_duration = request.data.get('food_duration')
         room_refund = request.data.get('room_refund')
-        food_refund = request.data.get('food_refund')
-        total_amount = request.data.get('total_amount')
-        food_amount = request.data.get('food_amount')
         room_amount = request.data.get('room_amount')
+
+        massaj1_duration = request.data.get('massaj1_duration')
+        massaj1_refund = request.data.get('massaj1_refund')
+        massaj1_amount = request.data.get('massaj1_amount')
+
+        massaj2_duration = request.data.get('massaj2_duration')
+        massaj2_refund = request.data.get('massaj2_refund')
+        massaj2_amount = request.data.get('massaj2_amount')
+
+        food_duration = request.data.get('food_duration')
+        food_refund = request.data.get('food_refund')
+        food_amount = request.data.get('food_amount')
+
+        total_amount = request.data.get('total_amount')
         total_refund = request.data.get('total_refund')
         patient = Patient.objects.get(pk=pk)
         patient.duration = room_duration
-        patient.food_duration = food_duration
         patient.room_refund = room_refund
-        patient.food_refund = food_refund
-        patient.total_amount = total_amount
-        patient.food_amount = food_amount
         patient.room_amount = room_amount
+
+        patient.food_duration = food_duration
+        patient.food_refund = food_refund
+        patient.food_amount = food_amount
+
+        patient.massaj1_duration = massaj1_duration
+        patient.massaj1_refund = massaj1_refund
+        patient.massaj1_amount = massaj1_amount
+
+        patient.massaj2_duration = massaj2_duration
+        patient.massaj2_refund = massaj2_refund
+        patient.massaj2_amount = massaj2_amount
+
+        patient.total_amount = total_amount
         patient.total_refund = total_refund
         patient.save()
 
@@ -136,10 +171,6 @@ class PatientAPI(APIView):
 
         serializer = PatientSerializer(data=ser_patient, many=True)
         serializer.is_valid()
-        # if serializer.is_valid():
-        #     serializer.save()
-        #     return Response(serializer.data, status=200)
-        # return Response(serializer.errors, status=400)
         return Response(serializer.data, status=200)
 
 
@@ -172,10 +203,10 @@ class PatientStatisticsAPI(APIView):
         return Response(serializer.data, status=200)
 
 
-class FoodAPI(APIView):
+class RoomServiceAPI(APIView):
     def get(self, request):
-        food = Food.objects.all()
-        serializer = FoodSerializer(data=food, many=True)
+        food = RoomService.objects.all()
+        serializer = RoomServiceSerializer(data=food, many=True)
         serializer.is_valid()
         return Response(serializer.data, status=200)
 

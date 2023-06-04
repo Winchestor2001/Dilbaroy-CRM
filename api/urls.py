@@ -10,7 +10,7 @@ urlpatterns = [
     path('bemor/<int:pk>/', views.PatientAPI.as_view()),
     path('doctor_statistics/', views.DoctorStatisticsAPI.as_view()),
     path('patient_statistics/', views.PatientStatisticsAPI.as_view()),
-    path('food/', views.FoodAPI.as_view()),
+    path('room_services/', views.RoomServiceAPI.as_view()),
     path('close_room/', views.PatientRoomEndAPI.as_view()),
 
     path('auth/', include("djoser.urls")),

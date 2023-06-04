@@ -108,8 +108,8 @@ class PatientSerializer(serializers.ModelSerializer):
     #     return instance
 
 
-class FoodSerializer(serializers.ModelSerializer):
+class RoomServiceSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Food
+        model = RoomService
         fields = '__all__'

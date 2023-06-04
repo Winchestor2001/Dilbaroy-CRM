@@ -24,9 +24,9 @@ class RoomTypeAdmin(admin.ModelAdmin):
     list_display = ['room_type']
 
 
-@admin.register(Food)
-class FoodTypeAdmin(admin.ModelAdmin):
-    list_display = ['food', 'food_price']
+@admin.register(RoomService)
+class RoomServiceTypeAdmin(admin.ModelAdmin):
+    list_display = ['name', 'price']
 
 
 @admin.register(Room)

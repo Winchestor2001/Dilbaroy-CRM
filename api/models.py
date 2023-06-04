@@ -74,11 +74,23 @@ class Patient(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, blank=True, null=True, verbose_name="Хона раками")
     duration = models.IntegerField(blank=True, null=True, verbose_name="Муддати")
     service = models.ManyToManyField(Service, null=True, blank=True, verbose_name="Хизмат турлари")
+
     food = models.BooleanField(default=False, verbose_name="Таом")
     food_amount = models.FloatField(default=0, verbose_name="Таом нархи")
     food_duration = models.IntegerField(blank=True, null=True, verbose_name="Таом Муддати")
-    from_date = models.DateTimeField(blank=True, null=True, verbose_name="Хона бант килинган сана")
     food_refund = models.FloatField(default=0, verbose_name="Таомдан кайтарилган сумма")
+
+    massaj1 = models.BooleanField(default=False, verbose_name="Массаж котталар учун")
+    massaj1_amount = models.FloatField(default=0, verbose_name="Массаж котталар учун нархи")
+    massaj1_duration = models.IntegerField(blank=True, null=True, verbose_name="Массаж котталар учун Муддати")
+    massaj1_refund = models.FloatField(default=0, verbose_name="Массаж котталар учун кайтарилган сумма")
+
+    massaj2 = models.BooleanField(default=False, verbose_name="Массаж ёшболлар учун")
+    massaj2_amount = models.FloatField(default=0, verbose_name="Массаж ёшболлар учун нархи")
+    massaj2_duration = models.IntegerField(blank=True, null=True, verbose_name="Массаж ёшболлар учун муддати")
+    massaj2_refund = models.FloatField(default=0, verbose_name="Массаж ёшболлар учун кайтарилган сумма")
+
+    from_date = models.DateTimeField(blank=True, null=True, verbose_name="Хона бант килинган сана")
     room_refund = models.FloatField(default=0, verbose_name="Хонадан кайтарилган сумма")
     total_refund = models.FloatField(default=0, verbose_name="Кайтарилган сумма")
     room_amount = models.FloatField(default=0, verbose_name="Хона жами сумма")
@@ -93,14 +105,14 @@ class Patient(models.Model):
         verbose_name_plural = "Беморлар"
 
 
-class Food(models.Model):
-    food = models.CharField(max_length=200, blank=True, null=True, verbose_name="Таомнома")
-    food_price = models.FloatField(default=0, verbose_name="Таомнома нархи")
+class RoomService(models.Model):
+    name = models.CharField(max_length=200, blank=True, null=True, verbose_name="Номи")
+    price = models.FloatField(default=0, verbose_name="Нархи")
 
     def __str__(self) -> str:
-        return str(self.food)
+        return str(self.name)
 
     class Meta:
-        verbose_name = "Бемор таоми"
-        verbose_name_plural = "Беморлар таоми"
+        verbose_name = "Хона хизмати"
+        verbose_name_plural = "Хоналар хизмати"
 
