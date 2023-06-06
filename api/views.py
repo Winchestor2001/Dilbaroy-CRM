@@ -211,12 +211,27 @@ class RoomServiceAPI(APIView):
         return Response(serializer.data, status=200)
 
 
+class RoomStatisticsAPI(APIView):
+    authentication_classes = [TokenAuthentication]
+
+    def get(self, request):
+        from_date = timezone.make_aware(datetime.strptime(request.GET.get('from_date'), '%Y-%m-%d'))
+        to_date = timezone.make_aware(datetime.strptime(request.GET.get('to_date'), '%Y-%m-%d') + timedelta(days=1))
+        rooms = RoomType.objects.all()
+        serializer = RoomStatisticsSerializer(data=rooms, many=True, from_date=from_date, to_date=to_date)
+        serializer.is_valid()
+        return Response(serializer.data, status=200)
+
+
 class PatientRoomEndAPI(APIView):
     def post(self, request):
         patient_id = request.data.get('patient_id')
-        patient = Patient.objects.filter(pk=patient_id)
-        patient[0].room_status = True
+        patient = Patient.objects.get(pk=patient_id)
+        patient.room_status = True
+        room = Room.objects.get(id=patient.room.id)
+        room.room_patients += 1
+        room.save()
         patient.save()
-        serializer = PatientSerializer(data=patient, many=True)
+        serializer = PatientSerializer(instance=patient)
         return Response(serializer.data, status=200)
 

@@ -61,7 +61,8 @@ class DoctorsStatisticsSerializer(serializers.ModelSerializer):
             if self.from_date == self.to_date:
                 patients = obj.patient_set.filter(from_date=self.from_date).order_by('-created_date')
             else:
-                patients = obj.patient_set.filter(from_date__range=[self.from_date, self.to_date]).order_by('-created_date')
+                patients = obj.patient_set.filter(from_date__range=[self.from_date, self.to_date]).order_by(
+                    '-created_date')
         i = DoctorPatientSerializer(data=patients, many=True)
         i.is_valid()
         return i.data
@@ -81,35 +82,46 @@ class PatientSerializer(serializers.ModelSerializer):
         model = Patient
         fields = '__all__'
 
-    # def update(self, instance, validated_data):
-    #     print(instance)
-    #     if 'duration' in validated_data:
-    #         instance.duration = validated_data['duration']
-    #     if 'food_amount' in validated_data:
-    #         instance.food_amount = validated_data['food_amount']
-    #     if 'food_duration' in validated_data:
-    #         instance.food_duration = validated_data['food_duration']
-    #     if 'food_refund' in validated_data:
-    #         instance.food_refund = validated_data['food_refund']
-    #     if 'room_refund' in validated_data:
-    #         instance.room_refund = validated_data['room_refund']
-    #     if 'total_refund' in validated_data:
-    #         instance.total_refund = validated_data['total_refund']
-    #     if 'total_amount' in validated_data:
-    #         instance.total_amount = validated_data['total_amount']
-    #     instance.room = instance.room
-    #     instance.service = instance.service
-    #     instance.doctor = instance.doctor
-    #     instance.full_name = instance.full_name
-    #     instance.phone_number = instance.phone_number
-    #     instance.address = instance.address
-    #
-    #     instance.save()
-    #     return instance
-
 
 class RoomServiceSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = RoomService
         fields = '__all__'
+
+
+class RoomStatisticsSerializer(serializers.ModelSerializer):
+    def __init__(self, *args, **kwargs):
+        self.from_date = kwargs.pop('from_date', None)
+        self.to_date = kwargs.pop('to_date', None)
+        super(RoomStatisticsSerializer, self).__init__(*args, **kwargs)
+
+    class Meta:
+        model = RoomType
+        fields = '__all__'
+
+    def get_rooms(self, obj):
+        rooms = obj.room_set.all()
+        patients = []
+        total_sum = 0
+        for r in rooms:
+            if self.from_date and self.to_date:
+                if self.from_date == self.to_date:
+                    p = r.patient_set.filter(created_date=self.from_date).order_by('-created_date')
+                    if p:
+                        total_sum += p[0].room.room_price * p[0].duration
+                        for i in p:
+                            patients.append(i)
+                else:
+                    p = r.patient_set.filter(created_date__range=[self.from_date, self.to_date]).order_by(
+                        '-created_date')
+                    if p:
+                        total_sum += p[0].room.room_price * p[0].duration
+                        for i in p:
+                            patients.append(i)
+        return len(patients), total_sum
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        ret['patinets'] = self.get_rooms(instance)[0]
+        ret['total_sum'] = self.get_rooms(instance)[1]
+        return ret
