@@ -24,7 +24,14 @@ class RoomTypeSerializer(serializers.ModelSerializer):
         return ret
 
 
+class RoomTypesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoomType
+        fields = ['room_type']
+
+
 class RoomsSerializer(serializers.ModelSerializer):
+    room_type = RoomTypesSerializer()
     class Meta:
         model = Room
         fields = '__all__'
