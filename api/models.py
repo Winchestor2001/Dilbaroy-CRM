@@ -49,17 +49,12 @@ class Room(models.Model):
     room_comfortable = models.CharField(max_length=150, choices=COMFORTABLE, verbose_name="Кулайлиги")
 
     def __str__(self) -> str:
-        return str(self.room_number)
+        return "{} - {}".format(self.room_type, self.room_number)
 
     class Meta:
         ordering = ('room_number',)
         verbose_name = "Хона"
         verbose_name_plural = "Хоналар"
-
-    def save(self, *args, status=False, **kwargs):
-        if not status:
-            self.room_patients = self.room_personal
-        super().save(*args, **kwargs)
 
 
 class Patient(models.Model):
@@ -90,7 +85,7 @@ class Patient(models.Model):
     massaj2_duration = models.IntegerField(blank=True, null=True, verbose_name="Массаж ёшболлар учун муддати")
     massaj2_refund = models.FloatField(default=0, verbose_name="Массаж ёшболлар учун кайтарилган сумма")
 
-    from_date = models.DateTimeField(blank=True, null=True, verbose_name="Хона бант килинган сана")
+    from_date = models.DateField(blank=True, null=True, verbose_name="Хона бант килинган сана")
     room_refund = models.FloatField(default=0, verbose_name="Хонадан кайтарилган сумма")
     total_refund = models.FloatField(default=0, verbose_name="Кайтарилган сумма")
     room_amount = models.FloatField(default=0, verbose_name="Хона жами сумма")

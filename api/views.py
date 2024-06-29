@@ -71,7 +71,7 @@ class RegisterPatientAPI(APIView):
 
         room = Room.objects.get(pk=room_number)
         room.room_patients -= 1
-        room.save(status=True)
+        room.save()
 
         patient.room = room
         patient.duration = duration
@@ -178,8 +178,8 @@ class DoctorStatisticsAPI(APIView):
     authentication_classes = [TokenAuthentication]
 
     def get(self, request):
-        from_date = timezone.make_aware(datetime.strptime(request.GET.get('from_date'), '%Y-%m-%dT%H:%M'))
-        to_date = timezone.make_aware(datetime.strptime(request.GET.get('to_date'), '%Y-%m-%dT%H:%M') + timedelta(days=1))
+        from_date = timezone.make_aware(datetime.strptime(request.GET.get('from_date'), '%Y-%m-%d'))
+        to_date = timezone.make_aware(datetime.strptime(request.GET.get('to_date'), '%Y-%m-%d') + timedelta(days=1))
         doctors = Doctor.objects.all()
         serializer = DoctorsStatisticsSerializer(data=doctors, many=True, from_date=from_date, to_date=to_date)
         serializer.is_valid()

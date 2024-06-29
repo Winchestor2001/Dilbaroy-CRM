@@ -15,7 +15,7 @@ class DoctorAdmin(admin.ModelAdmin):
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
     list_display = ['id', 'full_name', 'pass_data', 'doctor', 'room', 'from_date']
-    search_fields = ['full_name', 'pass_data', 'doctor', 'room']
+    search_fields = ['full_name', 'pass_data']
     list_display_links = ['id', 'full_name']
 
 
