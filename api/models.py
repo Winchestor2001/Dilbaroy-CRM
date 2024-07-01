@@ -92,6 +92,8 @@ class Patient(models.Model):
     total_amount = models.FloatField(default=0, verbose_name="Жами сумма")
     room_status = models.BooleanField(default=False, verbose_name="Хона")
 
+    obj_status = models.BooleanField(default=False)
+
     def __str__(self) -> str:
         return str(self.full_name)
 
