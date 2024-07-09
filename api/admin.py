@@ -50,14 +50,17 @@ class PatientAdmin(admin.ModelAdmin):
 @admin.register(RoomType)
 class RoomTypeAdmin(admin.ModelAdmin):
     list_display = ['room_type']
+    search_fields = ['room_type']
 
 
 @admin.register(RoomService)
 class RoomServiceTypeAdmin(admin.ModelAdmin):
     list_display = ['name', 'price']
+    search_fields = ['name']
 
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
     list_display = ['room_type', 'room_number', 'room_personal', 'room_patients', 'room_price', 'room_comfortable']
+    search_fields = ['room_type', 'room_number']
 
