@@ -70,13 +70,10 @@ class Patient(models.Model):
     duration = models.IntegerField(blank=True, null=True, verbose_name="Муддати")
     service = models.ManyToManyField(Service, null=True, blank=True, verbose_name="Хизмат турлари")
 
-<<<<<<< HEAD
-=======
     is_frozen = models.BooleanField(default=False, verbose_name="Музлатилган")
     frozen_days = models.IntegerField(default=0, verbose_name="Музлатилган кун")
     is_paid = models.BooleanField(default=False, verbose_name="Туланганми")
 
->>>>>>> b37c38b92f9e97ba7c1fc7e9f87ccd1236a5d9f2
     food = models.BooleanField(default=False, verbose_name="Таом")
     food_amount = models.FloatField(default=0, verbose_name="Таом нархи")
     food_duration = models.IntegerField(blank=True, null=True, verbose_name="Таом Муддати")
