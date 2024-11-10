@@ -27,7 +27,7 @@ class RegisterPatientAPI(APIView):
     authentication_classes = [TokenAuthentication]
 
     def get(self, request):
-        patients = Patient.objects.filter(obj_status=False)
+        patients = Patient.objects.all()
         serializer = PatientSerializer(data=patients, many=True)
         serializer.is_valid()
         return Response(serializer.data, status=200)
@@ -192,12 +192,12 @@ class PatientStatisticsAPI(APIView):
     def get(self, request):
         from_date = timezone.make_aware(datetime.strptime(request.GET.get('from_date'), '%Y-%m-%d'))
         to_date = timezone.make_aware(datetime.strptime(request.GET.get('to_date'), '%Y-%m-%d') + timedelta(days=1))
-        patients = Patient.objects.filter(obj_status=False)
+        patients = Patient.objects.all()
         if from_date and to_date:
             if from_date == to_date:
-                patients = Patient.objects.filter(from_date=from_date, obj_status=False).order_by('-from_date')
+                patients = Patient.objects.filter(from_date=from_date).order_by('-from_date')
             else:
-                patients = Patient.objects.filter(from_date__range=[from_date, to_date], obj_status=False).order_by('-from_date')
+                patients = Patient.objects.filter(from_date__range=[from_date, to_date]).order_by('-from_date')
         serializer = PatientSerializer(data=patients, many=True)
         serializer.is_valid()
         return Response(serializer.data, status=200)
