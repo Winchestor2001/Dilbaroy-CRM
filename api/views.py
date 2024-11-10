@@ -234,4 +234,3 @@ class PatientRoomEndAPI(APIView):
         patient.save()
         serializer = PatientSerializer(instance=patient)
         return Response(serializer.data, status=200)
-
