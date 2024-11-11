@@ -13,6 +13,7 @@ urlpatterns = [
     path('room_statistics/', views.RoomStatisticsAPI.as_view()),
     path('room_services/', views.RoomServiceAPI.as_view()),
     path('close_room/', views.PatientRoomEndAPI.as_view()),
+    path('freeze_patient/<int:pk>/', views.PatientFrozenAPI.as_view()),
 
     path('auth/', include("djoser.urls")),
     re_path(r'^auth/', include("djoser.urls.authtoken")),

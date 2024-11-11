@@ -58,6 +58,7 @@ class RegisterPatientAPI(APIView):
         from_date = request.data['from_date']
         total_amount = request.data['total_amount']
         room_amount = request.data['room_amount']
+        is_paid = request.data['is_paid']
         doctor = Doctor.objects.get(pk=doctor)
         patient = Patient.objects.create(
             slug_name=text_to_slug(full_name),
@@ -67,6 +68,7 @@ class RegisterPatientAPI(APIView):
             food_amount=food_amount, room_amount=room_amount,
             massaj1=massaj1, massaj1_amount=massaj1_amount, massaj1_duration=massaj1_duration,
             massaj2=massaj2, massaj2_amount=massaj2_amount, massaj2_duration=massaj2_duration,
+            is_paid=is_paid
         )
 
         room = Room.objects.get(pk=room_number)
@@ -146,10 +148,13 @@ class PatientAPI(APIView):
 
         total_amount = request.data.get('total_amount')
         total_refund = request.data.get('total_refund')
+        is_paid = request.data.get('is_paid')
         patient = Patient.objects.get(pk=pk)
         patient.duration = room_duration
         patient.room_refund = room_refund
         patient.room_amount = room_amount
+
+        patient.is_paid = is_paid
 
         patient.food_duration = food_duration
         patient.food_refund = food_refund
@@ -169,6 +174,23 @@ class PatientAPI(APIView):
 
         ser_patient = Patient.objects.filter(pk=pk)
 
+        serializer = PatientSerializer(data=ser_patient, many=True)
+        serializer.is_valid()
+        return Response(serializer.data, status=200)
+
+
+class PatientFrozenAPI(APIView):
+    authentication_classes = [TokenAuthentication]
+
+    def put(self, request, pk):
+        frozen_days = request.data.get('frozen_days')
+        is_frozen = request.data.get('is_frozen')
+        patient = Patient.objects.get(pk=pk)
+        patient.frozen_days = frozen_days
+        patient.is_frozen = is_frozen
+        patient.save()
+
+        ser_patient = Patient.objects.filter(pk=pk)
         serializer = PatientSerializer(data=ser_patient, many=True)
         serializer.is_valid()
         return Response(serializer.data, status=200)
